@@ -16,7 +16,7 @@ class MySQL:
     log_file = None
 
     def __init__(self, dbconfig):
-        self.log_file = open('SQLException.log', 'w')
+        self.log_file = open('SQLException.log', 'a')
         try:
             self._conn = MySQLdb.connect(
                 host=dbconfig['host'],
@@ -29,7 +29,7 @@ class MySQL:
         except MySQLdb.Error, e:
             error_msg = '   MySQL ERROR %d: %s' % (e.args[0], e.args[1])
             print(error_msg)
-            self.log_file.write(time.strftime('%Y-%m-%d %X',time.localtime()) + error_msg)
+            self.log_file.write(time.strftime('%Y-%m-%d %X',time.localtime()) + error_msg + '\n')
         self._cur = self._conn.cursor(MySQLdb.cursors.DictCursor)
 
 
@@ -40,7 +40,7 @@ class MySQL:
         except MySQLdb.Error, e:
             error_msg = '   MySQL ERROR %d: %s' % (e.args[0], e.args[1])
             print(error_msg)
-            self.log_file.write(time.strftime('%Y-%m-%d %X',time.localtime()) + error_msg)
+            self.log_file.write(time.strftime('%Y-%m-%d %X',time.localtime()) + '   ERROR SQL:' + sql + '\n')
 
     def exec_sql(self, sql):
         try:
@@ -48,7 +48,7 @@ class MySQL:
         except MySQLdb.Error, e:
             error_msg = '   MySQL ERROR %d: %s' % (e.args[0], e.args[1])
             print(error_msg)
-            self.log_file.write(time.strftime('%Y-%m-%d %X',time.localtime()) + error_msg)
+            self.log_file.write(time.strftime('%Y-%m-%d %X',time.localtime()) + error_msg + '\n')
 
     def transaction(self, sql_list):
         if isinstance(sql_list, []):
@@ -60,7 +60,7 @@ class MySQL:
                 self._conn.rollback()
                 error_msg = '   MySQL ERROR %d: %s' % (e.args[0], e.args[1])
                 print(error_msg)
-                self.log_file.write(time.strftime('%Y-%m-%d %X',time.localtime()) + error_msg)
+                self.log_file.write(time.strftime('%Y-%m-%d %X',time.localtime()) + error_msg + '\n')
 
 
     def __del__(self):
@@ -81,6 +81,6 @@ config = {
 }
 db = MySQL(config)
 print(time.time())
-sql = 'select * from Vendor where'
+sql = 'select * from Vendor where id = 10 where'
 print db.find_all(sql)
 print(time.time())
