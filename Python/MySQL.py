@@ -27,28 +27,49 @@ class MySQL:
                 charset=dbconfig['charset']
             )
         except MySQLdb.Error, e:
-            error_msg = 'MySQL ERROR %d: %s' % (e.args[0], e.args[1])
+            error_msg = '   MySQL ERROR %d: %s' % (e.args[0], e.args[1])
             print(error_msg)
-            self.log_file.write(error_msg)
+            self.log_file.write(time.strftime('%Y-%m-%d %X',time.localtime()) + error_msg)
         self._cur = self._conn.cursor(MySQLdb.cursors.DictCursor)
 
 
-    def find_all(self, table_name, condition='', params=list):
-        sql = "SELECT * FROM "
-        if table_name:
-            sql += table_name
-        if condition:
-            sql += ' WHERE ' + condition
+    def find_all(self, sql):
         try:
-            if params:
-                self._cur.execute(sql, params)
-            else:
-                self._cur.execute(sql)
+            self._cur.execute(sql)
             return self._cur.fetchall()
         except MySQLdb.Error, e:
-            error_msg = 'MySQL ERROR %d: %s' % (e.args[0], e.args[1])
+            error_msg = '   MySQL ERROR %d: %s' % (e.args[0], e.args[1])
             print(error_msg)
-            self.log_file.write(error_msg)
+            self.log_file.write(time.strftime('%Y-%m-%d %X',time.localtime()) + error_msg)
+
+    def exec_sql(self, sql):
+        try:
+            return self._cur.execute(sql)
+        except MySQLdb.Error, e:
+            error_msg = '   MySQL ERROR %d: %s' % (e.args[0], e.args[1])
+            print(error_msg)
+            self.log_file.write(time.strftime('%Y-%m-%d %X',time.localtime()) + error_msg)
+
+    def transaction(self, sql_list):
+        if isinstance(sql_list, []):
+            try:
+                for sql in sql_list:
+                    self._cur.execute(sql)
+                self._conn.commit()
+            except MySQLdb.Error, e:
+                self._conn.rollback()
+                error_msg = '   MySQL ERROR %d: %s' % (e.args[0], e.args[1])
+                print(error_msg)
+                self.log_file.write(time.strftime('%Y-%m-%d %X',time.localtime()) + error_msg)
+
+
+    def __del__(self):
+        self._cur.close()
+        self._conn.close()
+
+    def close(self):
+        self.__del__()
+
 
 config = {
     'host': 'localhost',
@@ -60,5 +81,6 @@ config = {
 }
 db = MySQL(config)
 print(time.time())
-print db.find_all('Vendor',params=[])
+sql = 'select * from Vendor where'
+print db.find_all(sql)
 print(time.time())
