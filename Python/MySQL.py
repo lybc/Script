@@ -70,3 +70,17 @@ class MySQL:
     def close(self):
         self.__del__()
 
+
+config = {
+    'host': 'localhost',
+    'port': 3306,
+    'user': 'root',
+    'passwd': 'root',
+    'db': 'lenovo',
+    'charset': 'utf8'
+}
+db = MySQL(config)
+print(time.time())
+sql = 'select * from Vendor where id = 10 where'
+print db.find_all(sql)
+print(time.time())
