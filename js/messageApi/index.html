@@ -16,7 +16,14 @@
 <label id="url"></label>
 </body>
 <script type="text/javascript">
+	
+
 	$(document).ready(function() {
+
+		function receive(data) {  
+        	alert(data.result);  
+    	}
+
 		var date = new Date();
 		var username = "youchuan";
 		var password = 320253;
@@ -28,14 +35,25 @@
 		};
 		var timestemp = months + String(date.getDate()) + String(date.getHours()) + String(date.getMinutes()) + String(date.getSeconds())
 		var key = md5(username + String(password) + timestemp)
-		var url = "http://www.youxinyun.com:3070/Platform_Http_Service/servlet/SendSms?UserName="
+		var apiUrl = "http://www.youxinyun.com:3070/Platform_Http_Service/servlet/SendSms?UserName="
 			+ username + "&Key=" + key + "&CharSet=" + charSet + "&Mobiles=18720085125&Content=helloworld&Timestemp=" + timestemp;
-		$("#url").text(url);
+		// $("#url").text(url);
 		// alert(url);
-		// $.getJSON(url, function(result) {
-		// 	console.log(result);
-		// });
-	});
+		$.ajax({  
+            type: "get",  
+            async: false,  
+            url: apiUrl,  
+            dataType: "jsonp",  
+            jsonp: "callback",
+            jsonpCallback: "receive",  
+            success: function (data) {  
+                alert(data.result);  
+            },  
+            error: function () {  
+                alert('fail');  
+            }
+        });  
+    });  
 	
 </script>
 </html>
