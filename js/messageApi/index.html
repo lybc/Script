@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+	<script src="md5.js"></script>
+</head>
+<body>
+<div>
+	<input id="phone" placeholder="请输入手机号" /> <button id="getCode">获取验证码</button>
+</div>
+<br>
+<div>
+	<input id="validateCode" placehoder="验证码" />
+</div>
+<label id="url"></label>
+</body>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var date = new Date();
+		var username = "youchuan";
+		var password = 320253;
+		var charSet = "utf-8";
+		var content = "hello world";
+		var months = String(date.getMonth() + 1);
+		if (months.length < 2) {
+			months = "0" + months;
+		};
+		var timestemp = months + String(date.getDate()) + String(date.getHours()) + String(date.getMinutes()) + String(date.getSeconds())
+		var key = md5(username + String(password) + timestemp)
+		var url = "http://www.youxinyun.com:3070/Platform_Http_Service/servlet/SendSms?UserName="
+			+ username + "&Key=" + key + "&CharSet=" + charSet + "&Mobiles=18720085125&Content=helloworld&Timestemp=" + timestemp;
+		$("#url").text(url);
+		// alert(url);
+		// $.getJSON(url, function(result) {
+		// 	console.log(result);
+		// });
+	});
+	
+</script>
+</html>
