@@ -30,6 +30,18 @@ def merge():
     if option == "n" or option == "N":
         exit()
 
+def contract():
+    filename = raw_input("请输入要处理的文件路径(将文件直接拖到本窗口即可): ")
+    contract_index = input("合同号所在哪一列: ")
+    ex = excel.excel()
+    if filename:
+        print("正在处理, 请等待....")
+        ex.branch_index = contract_index - 1
+        print(ex.filter_contract(filename))
+    option = raw_input("处理完成, 是否继续? (Y/N)")
+    if option == "n" or option == "N":
+        exit()
+
 if __name__ == "__main__":
     while(True):
         print(r"""
@@ -63,10 +75,12 @@ if __name__ == "__main__":
              请选择你想要进行的操作:
              1. 根据某列分割文件
              2. 合并目录下的所有文件
-
+             3. 输入列数筛选合同号
         """)
         option = input("请选择要进行的操作: ")
         if option == 1:
             cut()
         elif option == 2:
             merge()
+        elif option == 3:
+            contract()
