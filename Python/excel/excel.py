@@ -5,8 +5,7 @@ import sys
 import os
 import re
 from tqdm import tqdm
-reload(sys)
-sys.setdefaultencoding('utf-8')
+
 
 class excel:
     excel_dict = {}

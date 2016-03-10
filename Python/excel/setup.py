@@ -3,10 +3,11 @@ from distutils.core import setup
 import glob
 import py2exe,sys,os
 
+
 options = {"py2exe":
                 {"compressed": 1,
                  "optimize": 2,
-                 "bundle_files": 1,
+                 # "bundle_files": 1,
                  "packages": ["xlrd", "xlsxwriter", "tqdm"],
                  #"includes": extra_modules
                 }

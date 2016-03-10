@@ -1,10 +1,8 @@
-# -*- coding:gbk -*-
+# -*- coding: gbk-*-
 
 __author__ = 'lybc'
 import excel
-import sys
-reload(sys)
-sys.setdefaultencoding('gbk')
+# import sys
 
 def cut():
     filename = raw_input("请输入要处理的文件路径(将文件直接拖到本窗口即可): ")
@@ -44,7 +42,7 @@ def contract():
 
 if __name__ == "__main__":
     while(True):
-        print(r"""
+        print("""
                        欢迎使用EXCEL处理小工具!
 
                                _oo0oo_
@@ -77,7 +75,8 @@ if __name__ == "__main__":
              2. 合并目录下的所有文件
              3. 输入列数筛选合同号
         """)
-        option = input("请选择要进行的操作: ")
+        print("请选择要进行的操作: ")
+        option = input()
         if option == 1:
             cut()
         elif option == 2:
