@@ -8,11 +8,11 @@ import time
 
 
 class downloadLog():
-    __host = '45.115.145.112'
-    __username = 'maitrox2015'
-    __passwd = 'bi11g0!@#'
+    __host = ''
+    __username = ''
+    __passwd = ''
     __db = 'lenovo'
-    __path = '/home/vagrant/Code/srlog/'
+    __path = ''
 
     def __init__(self):
         self.conn = MySQLdb.connect(
