@@ -15,7 +15,7 @@ Class FileLog
     const DEBUG     = 'debug';
 
     /**
-     * KLogger options
+     *  KLogger options
      *  Anything options not considered 'core' to the logging library should be
      *  settable view the third parameter in the constructor
      *
