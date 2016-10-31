@@ -1,5 +1,5 @@
 <?php
-$file = fopen('log.txt', 'r');
+$file = fopen('log_2016-10-31.txt', 'r');
 $log = fread($file, '10000');
 $pattern = '/\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\].*/';
 preg_match_all($pattern, $log, $headers);

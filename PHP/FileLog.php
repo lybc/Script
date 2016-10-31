@@ -357,7 +357,7 @@ Class FileLog
             $message = "[{$this->getTimestamp()}] [{$level}] {$message}";
         }
         if ($this->options['appendContext'] && ! empty($context)) {
-            $message .= PHP_EOL.$this->indent($this->contextToString($context));
+            $message .= PHP_EOL.$this->indent(json_encode($context, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
         }
         return $message.PHP_EOL;
     }
@@ -382,24 +382,24 @@ Class FileLog
      * @param  array $context The Context
      * @return string
      */
-    protected function contextToString($context)
-    {
-        $export = '';
-        foreach ($context as $key => $value) {
-            $export .= "{$key}: ";
-            $export .= preg_replace(array(
-                '/=>\s+([a-zA-Z])/im',
-                '/array\(\s+\)/im',
-                '/^  |\G  /m'
-            ), array(
-                '=> $1',
-                'array()',
-                '    '
-            ), str_replace('array (', 'array(', var_export($value, true)));
-            $export .= PHP_EOL;
-        }
-        return str_replace(array('\\\\', '\\\''), array('\\', '\''), rtrim($export));
-    }
+//    protected function contextToString($context)
+//    {
+//        $export = '';
+//        foreach ($context as $key => $value) {
+//            $export .= "{$key}: ";
+//            $export .= preg_replace(array(
+//                '/=>\s+([a-zA-Z])/im',
+//                '/array\(\s+\)/im',
+//                '/^  |\G  /m'
+//            ), array(
+//                '=> $1',
+//                'array()',
+//                '    '
+//            ), str_replace('array (', 'array(', var_export($value, true)));
+//            $export .= PHP_EOL;
+//        }
+//        return str_replace(array('\\\\', '\\\''), array('\\', '\''), rtrim($export));
+//    }
     /**
      * Indents the given string with the given indent.
      *
