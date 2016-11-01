@@ -30,7 +30,7 @@ Class FileLog
         'flushFrequency' => false,
         'prefix'         => 'log_',
         'logFormat'      => false,
-        'appendContext'  => true,
+        'prettyContext'  => true
     );
     /**
      * Path to the log file
@@ -87,33 +87,8 @@ Class FileLog
     /**
      * FileLog constructor.
      * 私有化构造函数防止外界创建对象
-     *
-     * @param        $logDirectory
-     * @param string $logLevelThreshold
-     * @param array  $options
      */
-    private function __construct($logDirectory, $logLevelThreshold = self::DEBUG, array $options = array())
-    {
-        $this->logLevelThreshold = $logLevelThreshold;
-        $this->options = array_merge($this->options, $options);
-        $logDirectory = rtrim($logDirectory, DIRECTORY_SEPARATOR);
-        if ( ! file_exists($logDirectory)) {
-         mkdir($logDirectory, $this->defaultPermissions, true);
-        }
-        if(strpos($logDirectory, 'php://') === 0) {
-            $this->setLogToStdOut($logDirectory);
-            $this->setFileHandle('w+');
-        } else {
-            $this->setLogFilePath($logDirectory);
-            if(file_exists($this->logFilePath) && !is_writable($this->logFilePath)) {
-                throw new RuntimeException('The file could not be written to. Check that appropriate permissions have been set.');
-            }
-            $this->setFileHandle('a');
-        }
-        if ( ! $this->fileHandle) {
-            throw new RuntimeException('The file could not be opened. Check permissions.');
-        }
-    }
+    private function __construct() {}
 
     /**
      * 访问对象唯一入口
@@ -125,7 +100,26 @@ Class FileLog
     public static function getInstance($logDirectory, $logLevelThreshold = self::DEBUG, array $options = array())
     {
         if (!(self::$instance instanceof self)) {
-            self::$instance = new self($logDirectory, $logLevelThreshold, $options);
+            self::$instance = new self();
+        }
+        self::$instance->logLevelThreshold = $logLevelThreshold;
+        self::$instance->options = array_merge(self::$instance->options, $options);
+        $logDirectory = rtrim($logDirectory, DIRECTORY_SEPARATOR);
+        if ( ! file_exists($logDirectory)) {
+            mkdir($logDirectory, self::$instance->defaultPermissions, true);
+        }
+        if(strpos($logDirectory, 'php://') === 0) {
+            self::$instance->setLogToStdOut($logDirectory);
+            self::$instance->setFileHandle('w+');
+        } else {
+            self::$instance->setLogFilePath($logDirectory);
+            if(file_exists(self::$instance->logFilePath) && !is_writable(self::$instance->logFilePath)) {
+                throw new RuntimeException('The file could not be written to. Check that appropriate permissions have been set.');
+            }
+            self::$instance->setFileHandle('a');
+        }
+        if ( ! self::$instance->fileHandle) {
+            throw new RuntimeException('The file could not be opened. Check permissions.');
         }
         return self::$instance;
     }
@@ -347,7 +341,6 @@ Class FileLog
                 'level-padding' => str_repeat(' ', 9 - strlen($level)),
                 'priority'      => $this->logLevels[$level],
                 'message'       => $message,
-                'context'       => json_encode($context),
             );
             $message = $this->options['logFormat'];
             foreach ($parts as $part => $value) {
@@ -356,8 +349,13 @@ Class FileLog
         } else {
             $message = "[{$this->getTimestamp()}] [{$level}] {$message}";
         }
-        if ($this->options['appendContext'] && ! empty($context)) {
-            $message .= PHP_EOL.$this->indent(json_encode($context, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
+        if (! empty($context)) {
+            if ($this->options['prettyContext']) {
+                $context = PHP_EOL.$this->indent(json_encode($context, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
+            } else {
+                $context = $this->indent(json_encode($context, JSON_UNESCAPED_UNICODE));
+            }
+            $message .= $context;
         }
         return $message.PHP_EOL;
     }
