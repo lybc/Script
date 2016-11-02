@@ -349,9 +349,9 @@ Class FileLog
         } else {
             $message = "[{$this->getTimestamp()}] [{$level}] {$message}";
         }
-        if (! empty($context)) {
+        if (! empty($context && is_array($context))) {
             if ($this->options['prettyContext']) {
-                $context = PHP_EOL.$this->indent(json_encode($context, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
+                $context = $this->indent(json_encode($context, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
             } else {
                 $context = $this->indent(json_encode($context, JSON_UNESCAPED_UNICODE));
             }
