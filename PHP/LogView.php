@@ -98,32 +98,34 @@ $levelTag = [
     </style>
 </head>
 <body>
-<table id="logTable" class="table table-striped table-bordered">
-    <thead>
+<div class="col-sm-9 col-md-10 table-container">
+    <table id="logTable" class="table table-striped table-bordered">
+        <thead>
         <tr>
             <th width="10%">Level</th>
             <th width="15%">data</th>
             <th>text</th>
         </tr>
-    </thead>
-    <tbody>
-    <?php foreach ($logs as $key => $log):?>
-        <tr>
-            <td class="<?=$levelTag[$log['level']]['class']?>">
-                <span class="<?=$levelTag[$log['level']]['sign']?>"> <?=$log['level']?></span>
-            </td>
-            <td><?=$log['date']?></td>
-            <td>
-                <p><?=$log['text']?></p>
-                <?php if (!empty($log)):?>
-                    <a class="expand btn btn-default btn-xs" show_id="context<?=$key?>">view detail</a>
-                <div id="context<?=$key?>" style="display: none; white-space: pre-wrap;"><pre><?=trim($log['context'])?></pre></div>
-                <?php endif?>
-            </td>
-        </tr>
-    <?php endforeach;?>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        <?php foreach ($logs as $key => $log):?>
+            <tr>
+                <td class="<?=$levelTag[$log['level']]['class']?>">
+                    <span class="<?=$levelTag[$log['level']]['sign']?>"> <?=$log['level']?></span>
+                </td>
+                <td><?=$log['date']?></td>
+                <td>
+                    <p><?=$log['text']?></p>
+                    <?php if (!empty($log)):?>
+                        <a class="expand btn btn-default btn-xs" show_id="context<?=$key?>">view detail</a>
+                        <div id="context<?=$key?>" style="display: none; white-space: pre-wrap;"><pre><?=json_encode(json_decode(trim($log['context']), true), JSON_PRETTY_PRINT)?></pre></div>
+                    <?php endif?>
+                </td>
+            </tr>
+        <?php endforeach;?>
+        </tbody>
+    </table>
+</div>
 <script type="text/javascript">
     $(document).ready(function () {
         $('#logTable').DataTable();
